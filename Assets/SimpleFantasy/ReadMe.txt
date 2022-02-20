@@ -1,18 +1,18 @@
-Simple Military
+﻿Simple Military
 
 //Gun Animation usage
 To animate the guns you will need to set mechanim parameters in the character Animator and parent the waepon mesh under the right hand jnt
 
 Parent weapon meshlocation -
 /SimpleMilitary_SpecialForces04_White 
-	/SimpleMilitary_Characters
-		/Root_jnt
-			/Hips_jnt
-				/Body_jnt
-					/Spine_jnt
-						/UpperArm_Right_jnt
-							/LowerArm_Right_jnt
-								/Hand_Right_jnt
+    /SimpleMilitary_Characters
+        /Root_jnt
+            /Hips_jnt
+                /Body_jnt
+                    /Spine_jnt
+                        /UpperArm_Right_jnt
+                            /LowerArm_Right_jnt
+                                /Hand_Right_jnt
 
 //Mechanim parameters
 

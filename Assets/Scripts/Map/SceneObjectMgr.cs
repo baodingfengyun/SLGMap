@@ -6,11 +6,11 @@ using UnityEngine;
 public class SceneObjectMgr : MonoBehaviour {
 
     public List<SceneObjectClass> sceneObjectList;
-	// Use this for initialization
+    // Use this for initialization
 	void OnEnable () {
         sceneObjectList = new List<SceneObjectClass>();
     }
-	
+    
     public void Clear()
     {
         sceneObjectList.Clear();

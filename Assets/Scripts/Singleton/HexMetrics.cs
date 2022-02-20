@@ -11,40 +11,55 @@ public class HexMetrics: SingletonDestory<HexMetrics>
 
     public float cellPerturbStrength = 3f;//微扰程度
 
+    /// <summary>
+    /// 外径
+    /// </summary>
     public float outerRadius = 10f;//外径
 
-	public float innerRadius = 8;//内径
+    /// <summary>
+    /// 内径是如何计算的？
+    /// 取组成六边形的六个等边三角形中的一个，内径就是这个三角形的高，
+    /// 把这个三角形中中间分开成两个直角三角形，即可用勾股定理求得。
+    /// </summary>
+    public float INNER_HEIGHT = 0.866025404f;
+    public float innerRadius = 8f; // 临时值
 
-	public float solidFactor = 0.75f;
+    public float solidFactor = 0.75f;
 
-	public float blendFactor = 0.25f;
+    public float blendFactor = 0.25f;
 
-	public float elevationStep = 5f;
+    public float elevationStep = 5f;
 
-	public int terracesPerStep = 2;//台阶数
+    public int terracesPerStep = 2;//台阶数
 
     public float waterOffset = -0.5f;//同高度下，水面相对陆面的偏移
 
 
-	public int terraceSteps = 2 * 2 + 1;//台阶面数
+    public int terraceSteps = 2 * 2 + 1;//台阶面数
 
-	public float horizontalTerraceStepSize = 1f / 5;
+    public float horizontalTerraceStepSize = 1f / 5;
 
-	public float verticalTerraceStepSize = 1f / (5 + 1);
+    public float verticalTerraceStepSize = 1f / (5 + 1);
 
-    //偏移中心点的各点的向量
+    /// <summary>
+    /// 定位中心的六边形单元格。六边形有两种定位方式，要么是尖的朝上，要么是平的朝上。
+    /// 这里我们选前一种方式，并把朝上的第一个角作为起点，然后顺时针添加其余角的顶点，
+    /// 在世界坐标系的XZ平面构建六边形。
+    /// </summary>
     Vector3[] corners = null;
 
     public bool isEditor = false;
 
     public void Init()
     {
-        innerRadius = outerRadius * 0.866025404f;
+        innerRadius = outerRadius * INNER_HEIGHT;
         blendFactor = 1f - solidFactor;
         terraceSteps = terracesPerStep * 2 + 1;
         horizontalTerraceStepSize = 1f / terraceSteps;
         verticalTerraceStepSize = 1f / (terracesPerStep + 1);
-        corners = new Vector3[]{
+
+        // 定义了 7 个点(第 1 个和第 7 个重合) 这是为什么?
+        corners = new Vector3[] {
             new Vector3(0f, 0f, outerRadius),
             new Vector3(innerRadius, 0f, 0.5f * outerRadius),
             new Vector3(innerRadius, 0f, -0.5f * outerRadius),
@@ -56,49 +71,49 @@ public class HexMetrics: SingletonDestory<HexMetrics>
     }
 
     public  Vector3 GetFirstCorner (HexDirection direction) {
-		return corners[(int)direction];
-	}
+        return corners[(int)direction];
+    }
 
-	public  Vector3 GetSecondCorner (HexDirection direction) {
-		return corners[(int)direction + 1];
-	}
+    public  Vector3 GetSecondCorner (HexDirection direction) {
+        return corners[(int)direction + 1];
+    }
 
-	public  Vector3 GetFirstSolidCorner (HexDirection direction) {
-		return corners[(int)direction] * solidFactor;
-	}
+    public  Vector3 GetFirstSolidCorner (HexDirection direction) {
+        return corners[(int)direction] * solidFactor;
+    }
 
-	public  Vector3 GetSecondSolidCorner (HexDirection direction) {
-		return corners[(int)direction + 1] * solidFactor;
-	}
+    public  Vector3 GetSecondSolidCorner (HexDirection direction) {
+        return corners[(int)direction + 1] * solidFactor;
+    }
 
     //两向量相加得到桥的方向
-	public Vector3 GetBridge (HexDirection direction) {
-		return (corners[(int)direction] + corners[(int)direction + 1]) *
-			blendFactor;
-	}
+    public Vector3 GetBridge (HexDirection direction) {
+        return (corners[(int)direction] + corners[(int)direction + 1]) *
+            blendFactor;
+    }
 
 
     // 获取a到b之间的差值位置
-	public Vector3 TerraceLerp (Vector3 a, Vector3 b, int step) {
-		float h = step * horizontalTerraceStepSize;
-		a.x += (b.x - a.x) * h;
-		a.z += (b.z - a.z) * h;
-		float v = ((step + 1) / 2) * verticalTerraceStepSize;
-		a.y += (b.y - a.y) * v;
-		return a;
-	}
+    public Vector3 TerraceLerp (Vector3 a, Vector3 b, int step) {
+        float h = step * horizontalTerraceStepSize;
+        a.x += (b.x - a.x) * h;
+        a.z += (b.z - a.z) * h;
+        float v = ((step + 1) / 2) * verticalTerraceStepSize;
+        a.y += (b.y - a.y) * v;
+        return a;
+    }
 
-	public Color TerraceLerp (Color a, Color b, int step) {
-		float h = step * horizontalTerraceStepSize;
-		return Color.Lerp(a, b, h);
-	}
+    public Color TerraceLerp (Color a, Color b, int step) {
+        float h = step * horizontalTerraceStepSize;
+        return Color.Lerp(a, b, h);
+    }
 
-	public HexEdgeType GetEdgeType (int elevation1, int elevation2,bool isStep) {
-		if (elevation1 == elevation2) {
-			return HexEdgeType.Flat;
-		}
-		int delta = elevation2 - elevation1;
-		if (delta == 1 || delta == -1) {
+    public HexEdgeType GetEdgeType (int elevation1, int elevation2,bool isStep) {
+        if (elevation1 == elevation2) {
+            return HexEdgeType.Flat;
+        }
+        int delta = elevation2 - elevation1;
+        if (delta == 1 || delta == -1) {
             if (isStep)
             {
                 return HexEdgeType.Step;
@@ -107,9 +122,9 @@ public class HexMetrics: SingletonDestory<HexMetrics>
             {
                 return HexEdgeType.Slope;
             }
-		}
-		return HexEdgeType.Cliff;
-	}
+        }
+        return HexEdgeType.Cliff;
+    }
 
     public const float elevationPerturbStrength = 2f;//y轴上的微扰
 

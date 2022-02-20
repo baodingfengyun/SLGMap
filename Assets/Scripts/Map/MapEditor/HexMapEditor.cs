@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 //[ExecuteInEditMode]
 public class HexMapEditor : MonoBehaviour {
 
-	//public Color[] colors;
+    //public Color[] colors;
     public static GameObject uiRoot;
 
 	public HexGrid hexGrid;
@@ -82,15 +82,15 @@ public class HexMapEditor : MonoBehaviour {
         isEditorWater = value;
     }
 
-	//public void SelectColor (int index)
+    //public void SelectColor (int index)
  //   {
-	//	cellColor = colors[index];
-	//}
+    //	cellColor = colors[index];
+    //}
 
 	public void SetElevation (float sliderValue)
     {
-		elevation = (int)sliderValue;
-	}
+    	elevation = (int)sliderValue;
+    }
 
     public void SetWaterLevel(float sliderValue)
     {
@@ -453,8 +453,8 @@ public class HexMapEditor : MonoBehaviour {
 
     //地形
 	void HandleInput () {
-		Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit hit;
+    	Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+    	RaycastHit hit;
         HexCell centerCell = null;
         int centerX = 0;
         int centerZ = 0;
@@ -500,7 +500,7 @@ public class HexMapEditor : MonoBehaviour {
             }
 
         }
-	}
+    }
 
     IEnumerator WaitMesh(HexGridChunk chunk)
     {

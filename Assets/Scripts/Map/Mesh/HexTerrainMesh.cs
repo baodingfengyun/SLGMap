@@ -100,7 +100,7 @@ public class HexTerrainMesh : HexMesh {
     /// <param name="cell"></param>
     /// <param name="v1"></param>
     /// <param name="v2"></param>
-	 void TriangulateConnection(
+     void TriangulateConnection(
         HexDirection direction, HexCell cell, EdgeVertices e1
     )
     {

@@ -147,17 +147,17 @@ public class HexMesh : MonoBehaviour {
 
     //绘制六边形
 	public void Triangulate (HexCell cell) {
-		for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++) {
-			Triangulate(d, cell);
-		}
-	}
+    	for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++) {
+        	Triangulate(d, cell);
+        }
+    }
 
 	void Triangulate (HexDirection direction, HexCell cell) {
         if(cell == null)
         {
             return;
         }
-		Vector3 center = cell.LocalPosition;
+    	Vector3 center = cell.LocalPosition;
         //Vector3 v1 = center + HexMetrics.GetFirstSolidCorner(direction);   //形成面的内六边形顶点
         //Vector3 v2 = center + HexMetrics.GetSecondSolidCorner(direction);
 
@@ -223,12 +223,12 @@ public class HexMesh : MonoBehaviour {
     /// <param name="v1"></param>
     /// <param name="v2"></param>
      void TriangulateConnection (
-		HexDirection direction, HexCell cell, EdgeVertices e1
+    	HexDirection direction, HexCell cell, EdgeVertices e1
     ) {
-		HexCell neighbor = cell.GetNeighbor(direction);
-		if (neighbor == null) {
-			return;
-		}
+    	HexCell neighbor = cell.GetNeighbor(direction);
+    	if (neighbor == null) {
+        	return;
+        }
 
         Vector3 bridge = HexMetrics.instance.GetBridge(direction);
         bridge.y = neighbor.LocalPosition.y - cell.LocalPosition.y;
@@ -241,96 +241,96 @@ public class HexMesh : MonoBehaviour {
             TriangulateEdgeTerraces(e1, cell, e2,  neighbor);
         }
         //绘制平面或者陡坡
-		else {
+    	else {
             TriangulateEdgeStrip(e1,cell.color, e2, neighbor.color);
         }
 
         //绘制中间三角
-		HexCell nextNeighbor = cell.GetNeighbor(direction.Next());
-		if (direction <= HexDirection.E && nextNeighbor != null) {
-			Vector3 v5 = e1.v4 + HexMetrics.instance.GetBridge(direction.Next());//获取桥对面的点
-			v5.y = nextNeighbor.LocalPosition.y;//设置桥对面的点的y
+    	HexCell nextNeighbor = cell.GetNeighbor(direction.Next());
+    	if (direction <= HexDirection.E && nextNeighbor != null) {
+        	Vector3 v5 = e1.v4 + HexMetrics.instance.GetBridge(direction.Next());//获取桥对面的点
+        	v5.y = nextNeighbor.LocalPosition.y;//设置桥对面的点的y
 
-			if (cell.Elevation <= neighbor.Elevation) {
-				if (cell.Elevation <= nextNeighbor.Elevation) {
-					TriangulateCorner(e1.v4, cell, e2.v4, neighbor, v5, nextNeighbor);
-				}
-				else {
-					TriangulateCorner(v5, nextNeighbor, e1.v4, cell, e2.v4, neighbor);
-				}
-			}
-			else if (neighbor.Elevation <= nextNeighbor.Elevation) {
-				TriangulateCorner(e2.v4, neighbor, v5, nextNeighbor, e1.v4, cell);
-			}
-			else {
-				TriangulateCorner(v5, nextNeighbor, e1.v4, cell, e2.v4, neighbor);
-			}
-		}
-	}
+        	if (cell.Elevation <= neighbor.Elevation) {
+            	if (cell.Elevation <= nextNeighbor.Elevation) {
+                	TriangulateCorner(e1.v4, cell, e2.v4, neighbor, v5, nextNeighbor);
+                }
+            	else {
+                	TriangulateCorner(v5, nextNeighbor, e1.v4, cell, e2.v4, neighbor);
+                }
+            }
+        	else if (neighbor.Elevation <= nextNeighbor.Elevation) {
+            	TriangulateCorner(e2.v4, neighbor, v5, nextNeighbor, e1.v4, cell);
+            }
+        	else {
+            	TriangulateCorner(v5, nextNeighbor, e1.v4, cell, e2.v4, neighbor);
+            }
+        }
+    }
 
     //绘制中间三角区域
 	void TriangulateCorner (
-		Vector3 bottom, HexCell bottomCell,
-		Vector3 left, HexCell leftCell,
-		Vector3 right, HexCell rightCell
-	) {
-		HexEdgeType leftEdgeType = bottomCell.GetEdgeType(bottomCell.isStepDirection[(int)HexCoordinates.GetDirection(bottomCell, leftCell)],leftCell);
-		HexEdgeType rightEdgeType = bottomCell.GetEdgeType(bottomCell.isStepDirection[(int)HexCoordinates.GetDirection(bottomCell, rightCell)], rightCell);
+    	Vector3 bottom, HexCell bottomCell,
+    	Vector3 left, HexCell leftCell,
+    	Vector3 right, HexCell rightCell
+    ) {
+    	HexEdgeType leftEdgeType = bottomCell.GetEdgeType(bottomCell.isStepDirection[(int)HexCoordinates.GetDirection(bottomCell, leftCell)],leftCell);
+    	HexEdgeType rightEdgeType = bottomCell.GetEdgeType(bottomCell.isStepDirection[(int)HexCoordinates.GetDirection(bottomCell, rightCell)], rightCell);
 
         //left-right-other
-		if (leftEdgeType == HexEdgeType.Step) {
+    	if (leftEdgeType == HexEdgeType.Step) {
             //SSF 
             if (rightEdgeType == HexEdgeType.Step) {
-				TriangulateCornerTerraces(
-					bottom, bottomCell, left, leftCell, right, rightCell
-				);
-			}
+            	TriangulateCornerTerraces(
+                	bottom, bottomCell, left, leftCell, right, rightCell
+                );
+            }
             //SFS
-			else if (rightEdgeType == HexEdgeType.Flat && leftCell.GetEdgeType(leftCell.isStepDirection[(int)HexCoordinates.GetDirection(leftCell, rightCell)], rightCell) == HexEdgeType.Step) {
-				TriangulateCornerTerraces(
-					left, leftCell, right, rightCell, bottom, bottomCell
-				);
-			}
+        	else if (rightEdgeType == HexEdgeType.Flat && leftCell.GetEdgeType(leftCell.isStepDirection[(int)HexCoordinates.GetDirection(leftCell, rightCell)], rightCell) == HexEdgeType.Step) {
+            	TriangulateCornerTerraces(
+                	left, leftCell, right, rightCell, bottom, bottomCell
+                );
+            }
             //SCS SSC SCC 
-			else {
-				TriangulateCornerTerracesCliff(
-					bottom, bottomCell, left, leftCell, right, rightCell
-				);
-			}
-		}
-		else if (rightEdgeType == HexEdgeType.Step) {
+        	else {
+            	TriangulateCornerTerracesCliff(
+                	bottom, bottomCell, left, leftCell, right, rightCell
+                );
+            }
+        }
+    	else if (rightEdgeType == HexEdgeType.Step) {
             //FSS
-			if (leftEdgeType == HexEdgeType.Flat && leftCell.GetEdgeType(leftCell.isStepDirection[(int)HexCoordinates.GetDirection(leftCell, rightCell)], rightCell) == HexEdgeType.Step) {
-				TriangulateCornerTerraces(
-					right, rightCell, bottom, bottomCell, left, leftCell
-				);
-			}
+        	if (leftEdgeType == HexEdgeType.Flat && leftCell.GetEdgeType(leftCell.isStepDirection[(int)HexCoordinates.GetDirection(leftCell, rightCell)], rightCell) == HexEdgeType.Step) {
+            	TriangulateCornerTerraces(
+                	right, rightCell, bottom, bottomCell, left, leftCell
+                );
+            }
             //CSC CSS
-			else {
-				TriangulateCornerCliffTerraces(
-					bottom, bottomCell, left, leftCell, right, rightCell
-				);
-			}
-		}
-		else if (leftCell.GetEdgeType(leftCell.isStepDirection[(int)HexCoordinates.GetDirection(leftCell, rightCell)],rightCell) == HexEdgeType.Step) {
+        	else {
+            	TriangulateCornerCliffTerraces(
+                	bottom, bottomCell, left, leftCell, right, rightCell
+                );
+            }
+        }
+    	else if (leftCell.GetEdgeType(leftCell.isStepDirection[(int)HexCoordinates.GetDirection(leftCell, rightCell)],rightCell) == HexEdgeType.Step) {
             //CCS 
-			if (leftCell.Elevation < rightCell.Elevation) {
-				TriangulateCornerCliffTerraces(
-					right, rightCell, bottom, bottomCell, left, leftCell
-				);
-			}
-			else {
-				TriangulateCornerTerracesCliff(
-					left, leftCell, right, rightCell, bottom, bottomCell
-				);
-			}
-		}
+        	if (leftCell.Elevation < rightCell.Elevation) {
+            	TriangulateCornerCliffTerraces(
+                	right, rightCell, bottom, bottomCell, left, leftCell
+                );
+            }
+        	else {
+            	TriangulateCornerTerracesCliff(
+                	left, leftCell, right, rightCell, bottom, bottomCell
+                );
+            }
+        }
         //CCF CCC FCC CFC 
-		else {
-			AddTriangle(bottom, left, right);
-			AddTriangleColor(bottomCell.color, leftCell.color,  rightCell.color);
-		}
-	}
+    	else {
+        	AddTriangle(bottom, left, right);
+        	AddTriangleColor(bottomCell.color, leftCell.color,  rightCell.color);
+        }
+    }
 
     //绘制阶梯
     void TriangulateEdgeTerraces(
@@ -357,87 +357,87 @@ public class HexMesh : MonoBehaviour {
 
     //有出现平面的情况
     void TriangulateCornerTerraces (
-		Vector3 begin, HexCell beginCell,
-		Vector3 left, HexCell leftCell,
-		Vector3 right, HexCell rightCell
-	) {
-		Vector3 v3 = HexMetrics.instance.TerraceLerp(begin, left, 1);
-		Vector3 v4 = HexMetrics.instance.TerraceLerp(begin, right, 1);
-		Color c3 = HexMetrics.instance.TerraceLerp(beginCell.color, leftCell.color, 1);
-		Color c4 = HexMetrics.instance.TerraceLerp(beginCell.color, rightCell.color, 1);
+    	Vector3 begin, HexCell beginCell,
+    	Vector3 left, HexCell leftCell,
+    	Vector3 right, HexCell rightCell
+    ) {
+    	Vector3 v3 = HexMetrics.instance.TerraceLerp(begin, left, 1);
+    	Vector3 v4 = HexMetrics.instance.TerraceLerp(begin, right, 1);
+    	Color c3 = HexMetrics.instance.TerraceLerp(beginCell.color, leftCell.color, 1);
+    	Color c4 = HexMetrics.instance.TerraceLerp(beginCell.color, rightCell.color, 1);
 
-		AddTriangle(begin, v3, v4);
-		AddTriangleColor(beginCell.color, c3, c4);
+    	AddTriangle(begin, v3, v4);
+    	AddTriangleColor(beginCell.color, c3, c4);
 
-		for (int i = 2; i < HexMetrics.instance.terraceSteps; i++) {
-			Vector3 v1 = v3;
-			Vector3 v2 = v4;
-			Color c1 = c3;
-			Color c2 = c4;
-			v3 = HexMetrics.instance.TerraceLerp(begin, left, i);
-			v4 = HexMetrics.instance.TerraceLerp(begin, right, i);
-			c3 = HexMetrics.instance.TerraceLerp(beginCell.color, leftCell.color, i);
-			c4 = HexMetrics.instance.TerraceLerp(beginCell.color, rightCell.color, i);
-			AddQuad(v1, v2, v3, v4);
-			AddQuadColor(c1, c2, c3, c4);
-		}
+    	for (int i = 2; i < HexMetrics.instance.terraceSteps; i++) {
+        	Vector3 v1 = v3;
+        	Vector3 v2 = v4;
+        	Color c1 = c3;
+        	Color c2 = c4;
+        	v3 = HexMetrics.instance.TerraceLerp(begin, left, i);
+        	v4 = HexMetrics.instance.TerraceLerp(begin, right, i);
+        	c3 = HexMetrics.instance.TerraceLerp(beginCell.color, leftCell.color, i);
+        	c4 = HexMetrics.instance.TerraceLerp(beginCell.color, rightCell.color, i);
+        	AddQuad(v1, v2, v3, v4);
+        	AddQuadColor(c1, c2, c3, c4);
+        }
 
-		AddQuad(v3, v4, left, right);
-		AddQuadColor(c3, c4, leftCell.color, rightCell.color);
-	}
+    	AddQuad(v3, v4, left, right);
+    	AddQuadColor(c3, c4, leftCell.color, rightCell.color);
+    }
 
     //有出现陡坡的情况
     //left为s,right为c
 	void TriangulateCornerTerracesCliff (
-		Vector3 begin, HexCell beginCell,
-		Vector3 left, HexCell leftCell,
-		Vector3 right, HexCell rightCell
-	) {
+    	Vector3 begin, HexCell beginCell,
+    	Vector3 left, HexCell leftCell,
+    	Vector3 right, HexCell rightCell
+    ) {
         float b = Mathf.Abs(1f / (rightCell.Elevation - beginCell.Elevation));
         Vector3 boundary = Vector3.Lerp(Perturb(begin), Perturb(right), b);
         Color boundaryColor = Color.Lerp(beginCell.color, rightCell.color, b);
 
-		TriangulateBoundaryTriangle(
-			begin, beginCell, left, leftCell, boundary, boundaryColor
-		);
+    	TriangulateBoundaryTriangle(
+        	begin, beginCell, left, leftCell, boundary, boundaryColor
+        );
 
         //判断left和right之间的类型关系
         if (leftCell.GetEdgeType(leftCell.isStepDirection[(int)HexCoordinates.GetDirection(leftCell, rightCell)],rightCell) == HexEdgeType.Step) {
-			TriangulateBoundaryTriangle(
-				left, leftCell, right, rightCell, boundary, boundaryColor
-			);
-		}
-		else {
+        	TriangulateBoundaryTriangle(
+            	left, leftCell, right, rightCell, boundary, boundaryColor
+            );
+        }
+    	else {
             AddTriangleUnPerturb(Perturb(left), Perturb(right), boundary);
             AddTriangleColor(leftCell.color, rightCell.color, boundaryColor);
         }
-	}
+    }
 
     //left为c，right为s 与上一种情况对称
 	void TriangulateCornerCliffTerraces (
-		Vector3 begin, HexCell beginCell,
-		Vector3 left, HexCell leftCell,
-		Vector3 right, HexCell rightCell
-	) {
-		float b = Mathf.Abs( 1f / (leftCell.Elevation - beginCell.Elevation));
-		Vector3 boundary = Vector3.Lerp(Perturb(begin), Perturb(left), b);
-		Color boundaryColor = Color.Lerp(beginCell.color, leftCell.color, b);
+    	Vector3 begin, HexCell beginCell,
+    	Vector3 left, HexCell leftCell,
+    	Vector3 right, HexCell rightCell
+    ) {
+    	float b = Mathf.Abs( 1f / (leftCell.Elevation - beginCell.Elevation));
+    	Vector3 boundary = Vector3.Lerp(Perturb(begin), Perturb(left), b);
+    	Color boundaryColor = Color.Lerp(beginCell.color, leftCell.color, b);
 
-		TriangulateBoundaryTriangle(
-			right, rightCell, begin, beginCell, boundary, boundaryColor
-		);
+    	TriangulateBoundaryTriangle(
+        	right, rightCell, begin, beginCell, boundary, boundaryColor
+        );
 
         //判断left和right之间的类型关系
-		if (leftCell.GetEdgeType(leftCell.isStepDirection[(int)HexCoordinates.GetDirection(leftCell, rightCell)],rightCell) == HexEdgeType.Step) {
-			TriangulateBoundaryTriangle(
-				left, leftCell, right, rightCell, boundary, boundaryColor
-			);
-		}
-		else {
+    	if (leftCell.GetEdgeType(leftCell.isStepDirection[(int)HexCoordinates.GetDirection(leftCell, rightCell)],rightCell) == HexEdgeType.Step) {
+        	TriangulateBoundaryTriangle(
+            	left, leftCell, right, rightCell, boundary, boundaryColor
+            );
+        }
+    	else {
             AddTriangleUnPerturb(Perturb(left), Perturb(right), boundary);
             AddTriangleColor(leftCell.color, rightCell.color, boundaryColor);
         }
-	}
+    }
 
     void TriangulateBoundaryTriangle(
         Vector3 begin, HexCell beginCell,
@@ -469,14 +469,14 @@ public class HexMesh : MonoBehaviour {
 
     // 添加三角形
     protected void AddTriangle (Vector3 v1, Vector3 v2, Vector3 v3) {
-		int vertexIndex = vertices.Count;
+    	int vertexIndex = vertices.Count;
         vertices.Add(Perturb(v1));
         vertices.Add(Perturb(v2));
         vertices.Add(Perturb(v3));
         triangles.Add(vertexIndex);
-		triangles.Add(vertexIndex + 1);
-		triangles.Add(vertexIndex + 2);
-	}
+    	triangles.Add(vertexIndex + 1);
+    	triangles.Add(vertexIndex + 2);
+    }
 
     //添加没有被微扰的三角形
     protected void AddTriangleUnPerturb(Vector3 v1, Vector3 v2, Vector3 v3)
@@ -492,51 +492,51 @@ public class HexMesh : MonoBehaviour {
 
     // 添加三角形三点的颜色
     protected void AddTriangleColor (Color color) {
-		colors.Add(color);
-		colors.Add(color);
-		colors.Add(color);
-	}
+    	colors.Add(color);
+    	colors.Add(color);
+    	colors.Add(color);
+    }
 
 
     // 添加三角形三点的颜色
     protected void AddTriangleColor (Color c1, Color c2, Color c3) {
-		colors.Add(c1);
-		colors.Add(c2);
-		colors.Add(c3);
-	}
+    	colors.Add(c1);
+    	colors.Add(c2);
+    	colors.Add(c3);
+    }
 
 
     // 添加四边形
     protected void AddQuad (Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4) {
-		int vertexIndex = vertices.Count;
-		vertices.Add(Perturb(v1));
-		vertices.Add(Perturb(v2));
-		vertices.Add(Perturb(v3));
-		vertices.Add(Perturb(v4));
-		triangles.Add(vertexIndex);
-		triangles.Add(vertexIndex + 2);
-		triangles.Add(vertexIndex + 1);
-		triangles.Add(vertexIndex + 1);
-		triangles.Add(vertexIndex + 2);
-		triangles.Add(vertexIndex + 3);
-	}
+    	int vertexIndex = vertices.Count;
+    	vertices.Add(Perturb(v1));
+    	vertices.Add(Perturb(v2));
+    	vertices.Add(Perturb(v3));
+    	vertices.Add(Perturb(v4));
+    	triangles.Add(vertexIndex);
+    	triangles.Add(vertexIndex + 2);
+    	triangles.Add(vertexIndex + 1);
+    	triangles.Add(vertexIndex + 1);
+    	triangles.Add(vertexIndex + 2);
+    	triangles.Add(vertexIndex + 3);
+    }
 
     // 添加四边形四个点的颜色
     protected void AddQuadColor (Color c1, Color c2) {
-		colors.Add(c1);
-		colors.Add(c1);
-		colors.Add(c2);
-		colors.Add(c2);
-	}
+    	colors.Add(c1);
+    	colors.Add(c1);
+    	colors.Add(c2);
+    	colors.Add(c2);
+    }
 
 
     // 添加四边形四个点的颜色
     protected void AddQuadColor (Color c1, Color c2, Color c3, Color c4) {
-		colors.Add(c1);
-		colors.Add(c2);
-		colors.Add(c3);
-		colors.Add(c4);
-	}
+    	colors.Add(c1);
+    	colors.Add(c2);
+    	colors.Add(c3);
+    	colors.Add(c4);
+    }
 
 
     //对地图进行不规则处理

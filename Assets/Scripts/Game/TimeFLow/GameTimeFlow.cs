@@ -41,15 +41,15 @@ public class GameTimeFlow : MonoBehaviour {
         GameUnitManage.instance.isInit = false;
         gameControl = transform.GetComponent<GameControl>();
     }
-	
-	// Update is called once per frame
+    
+    // Update is called once per frame
 	void Update () {
         if(GameUnitManage.instance.powerList.Count<=1)
         {
             GameOver();
         }
-		
-	}
+        
+    }
 
     void GameOver()
     {

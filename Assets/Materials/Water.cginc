@@ -26,14 +26,14 @@ float Waves (float2 worldXZ, sampler2D noiseTex) {
 	float4 noise2 = tex2D(noiseTex, uv2 * 0.025);
 
 	float blendWave = sin(
-		(worldXZ.x + worldXZ.y) * 0.1 +
-		(noise1.y + noise2.z) + _Time.y
-	);
+        (worldXZ.x + worldXZ.y) * 0.1 +
+        (noise1.y + noise2.z) + _Time.y
+    );
 	blendWave *= blendWave;
 
 	float waves =
-		lerp(noise1.z, noise1.w, blendWave) +
-		lerp(noise2.x, noise2.y, blendWave);
-	 noise1.z + noise2.x;
+    	lerp(noise1.z, noise1.w, blendWave) +
+    	lerp(noise2.x, noise2.y, blendWave);
+     noise1.z + noise2.x;
 	return smoothstep(1, 2, waves);
 }

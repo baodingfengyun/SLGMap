@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SceneObjectClass : MonoBehaviour {
 
-	
+    
     public SceneObjectInfo sceneObjectInfo;
 
     string modelName = "";

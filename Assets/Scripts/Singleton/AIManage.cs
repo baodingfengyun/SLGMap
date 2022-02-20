@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class AIManage : Singleton<AIManage> {
 
-	// Use this for initialization
+    // Use this for initialization
 	void Start () {
-		
-	}
-	
+        
+    }
+    
 
     public void Init()
     {

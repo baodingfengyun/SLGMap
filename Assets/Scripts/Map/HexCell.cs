@@ -119,20 +119,20 @@ public class HexCell : MonoBehaviour {
 
     //高度
 	public int Elevation {
-		get
+    	get
         {
-			return elevation;
-		}
-		set
+        	return elevation;
+        }
+    	set
         {
-			elevation = value;
+        	elevation = value;
             RefreshPosition(value);
             //label.text = coordinates.X.ToString() + "\n" + coordinates.Y.ToString() + "\n" + coordinates.Z.ToString();
             //Vector3 uiPosition = uiRect.localPosition;
             //uiPosition.z = -position.y;
             //uiRect.localPosition = uiPosition;
         }
-	}
+    }
 
 
     void RefreshPosition(int value)
@@ -219,27 +219,27 @@ public class HexCell : MonoBehaviour {
     }
 
 	public HexCell GetNeighbor (HexDirection direction) {
-		return neighbors[(int)direction];
-	}
+    	return neighbors[(int)direction];
+    }
 
 	public void SetNeighbor (HexDirection direction, HexCell cell) {
-		neighbors[(int)direction] = cell;
-		cell.neighbors[(int)direction.Opposite()] = this;
-	}
+    	neighbors[(int)direction] = cell;
+    	cell.neighbors[(int)direction.Opposite()] = this;
+    }
 
 	public HexEdgeType GetEdgeType (bool isStep,HexDirection direction) {
         if (neighbors[(int)direction] == null)
             return 0;
-		return HexMetrics.instance.GetEdgeType(
-			elevation, neighbors[(int)direction].elevation, isStep
+    	return HexMetrics.instance.GetEdgeType(
+        	elevation, neighbors[(int)direction].elevation, isStep
         );
-	}
+    }
 
     public HexEdgeType GetEdgeType (bool isStep, HexCell otherCell) {
-		return HexMetrics.instance.GetEdgeType(
-			elevation, otherCell.elevation, isStep
+    	return HexMetrics.instance.GetEdgeType(
+        	elevation, otherCell.elevation, isStep
         );
-	}
+    }
 
     public HexGridChunk chunkParent;
     //反向获取所在块

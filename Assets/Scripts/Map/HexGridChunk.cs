@@ -191,11 +191,11 @@ public class HexGridChunk : MonoBehaviour {
         cells[i] = cell;
         cell.transform.SetParent(this.transform);
     }
-	
-	// Update is called once per frame
+    
+    // Update is called once per frame
 	void Update () {
-		
-	}
+        
+    }
 
     //以地形块为主体的保存
     public void Save(BinaryWriter writer)

@@ -7,6 +7,9 @@ using System.Collections;
 using UnityEditor;
 #endif
 
+/// <summary>
+/// 网格构建
+/// </summary>
 public class HexGrid : SingletonDestory<HexGrid> {
 
     public bool isLoadPrefab = false;

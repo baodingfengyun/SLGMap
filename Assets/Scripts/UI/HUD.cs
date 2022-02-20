@@ -8,11 +8,11 @@ public class HUD : MonoBehaviour {
     Slider slider = null;
     public Text data = null;
 
-	// Use this for initialization
+    // Use this for initialization
 	void Start () {
         slider = gameObject.GetComponent<Slider>();
         data = transform.Find("Data").GetComponent<Text>();
-	}
+    }
 
     bool isChange = false;
     public void RefreshHUD(int now,int all,Vector3 position,float high,ref bool isRefreshInjuryHUD)
